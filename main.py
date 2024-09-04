@@ -1,6 +1,7 @@
 import cv2
 import imutils 
 from imutils import paths
+from ultralytics import YOLO
 
 cap=cv2.VideoCapture(0)
 
@@ -14,7 +15,7 @@ while True:
     cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     c = max(cnts, key= cv2.contourArea)
-    cv2.imshow("video", grey)
+    cv2.imshow("video", edged)
 
     if cv2.waitKey(1) & 0xFF==ord('q'):
         break
