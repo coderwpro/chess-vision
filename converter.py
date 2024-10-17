@@ -29,10 +29,8 @@ class ReconstructedResNet(LightningModule):
     def forward(self, x):
         # Feature extraction
         x = self.feature_extractor(x)
-        print(f"Feature extractor output shape: {x.shape}")
         x = F.adaptive_avg_pool2d(x, (1,1))
         x = torch.flatten(x, 1)
-        print(f"Feature extractor output shape: {x.shape}")
         # Classifier
         x = self.classifier(x)
         return x
