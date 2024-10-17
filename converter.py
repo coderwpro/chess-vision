@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from pytorch_lightning import LightningModule
 
 class ReconstructedResNet(LightningModule):
@@ -18,12 +19,20 @@ class ReconstructedResNet(LightningModule):
         )
 
         # Define classifier
-        self.classifier = nn.Linear(2048, 832)  # Adjust input/output sizes based on the state_dict
+        self.classifier = nn.Sequential(
+            nn.Linear(512, 2048),
+            nn.ReLU(),
+            nn.Linear(2048, 832)
+        )
+
 
     def forward(self, x):
         # Feature extraction
         x = self.feature_extractor(x)
-        x = torch.flatten(x, start_dim=1)
+        print(f"Feature extractor output shape: {x.shape}")
+        x = F.adaptive_avg_pool2d(x, (1,1))
+        x = torch.flatten(x, 1)
+        print(f"Feature extractor output shape: {x.shape}")
         # Classifier
         x = self.classifier(x)
         return x
